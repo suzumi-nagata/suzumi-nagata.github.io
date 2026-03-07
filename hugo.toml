@@ -1,3 +1,59 @@
-baseURL = 'https://example.org/'
+theme = "mana"
+baseURL = 'https://suzumi-nagata.github.io/'
 languageCode = 'en-us'
-title = 'Suzumi Nagata'
+languageName = "English"
+title = "Suzumi's little web corner"
+[caches]
+  [caches.images]
+    dir = ':cacheDir/images'
+
+[params]
+  description = "My personal little chunk of the web"
+  favicon = "favicon.png"
+
+  heroTitleLine1 = "Suzumi's little"
+  heroTitleLine2 = "Web Corner"
+
+[params.avatar]
+  assetPath = "images/chibi-miso-transparent.png"
+  [params.avatar.home]
+    assetPath = "images/chibi-miso-transparent.png"
+  [params.avatar.about]
+    assetPath = "images/chibi-breeze-feather.png"
+
+[params.social]
+  github = "https://github.com/suzumi-nagata"
+  linkedin = "https://www.linkedin.com/in/suzumi-nagata"
+  email = "suzumi.nag@gmail.com"
+
+[[menus.main]]
+  name = 'Home'
+  pageRef = '/'
+  weight = 10
+
+[[menus.main]]
+  name = 'Posts'
+  pageRef = '/posts'
+  weight = 20
+
+[[menus.main]]
+  name = 'Tags'
+  pageRef = '/tags'
+  weight = 30
+
+[[menus.main]]
+  name = 'About'
+  url = '/about/'
+  weight = 40
+
+[markup]
+  [markup.tableOfContents]
+    startLevel = 1
+    endLevel = 6
+    ordered = false
+  [markup.goldmark]
+    [markup.goldmark.parser]
+      # Enable block-level attributes for blockquotes
+      [markup.goldmark.parser.attribute]
+        block = true
+        title = true
