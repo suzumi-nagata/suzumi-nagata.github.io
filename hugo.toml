@@ -47,13 +47,19 @@ url = '/about/'
 weight = 40
 
 [markup]
+
 [markup.tableOfContents]
 startLevel = 1
 endLevel = 6
 ordered = false
+
 [markup.goldmark]
+
 [markup.goldmark.parser]
 # Enable block-level attributes for blockquotes
 [markup.goldmark.parser.attribute]
 block = true
 title = true
+
+[markup.goldmark.renderer]
+unsafe = true
