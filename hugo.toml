@@ -14,6 +14,8 @@ favicon = "favicon.png"
 heroTitleLine1 = "Suzumi's little"
 heroTitleLine2 = "Web Corner"
 
+math = true
+
 [params.avatar]
 assetPath = "images/chibi-miso-transparent.png"
 [params.avatar.home]
@@ -63,3 +65,10 @@ title = true
 
 [markup.goldmark.renderer]
 unsafe = true
+
+[markup.goldmark.extensions]
+[markup.goldmark.extensions.passthrough]
+enable = true
+[markup.goldmark.extensions.passthrough.delimiters]
+block = [['\[', '\]'], ['$$', '$$']]
+inline = [['\(', '\)']]
