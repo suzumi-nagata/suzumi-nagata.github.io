@@ -44,6 +44,11 @@ pageRef = '/tags'
 weight = 30
 
 [[menus.main]]
+name = 'Garden'
+url = '/garden/'
+weight = 35
+
+[[menus.main]]
 name = 'About'
 url = '/about/'
 weight = 40
