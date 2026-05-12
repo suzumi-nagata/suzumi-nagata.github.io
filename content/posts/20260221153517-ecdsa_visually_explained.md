@@ -3,7 +3,7 @@ title = "ECDSA: Visually Explained"
 author = ["Suzumi Nagata"]
 date = 2026-04-23T00:00:00-03:00
 publishDate = 2026-04-23T00:00:00-03:00
-lastmod = 2026-05-04T23:29:08-03:00
+lastmod = 2026-05-12T13:14:02-03:00
 tags = ["DigitalSignatures", "ECC", "Cryptography", "Visualization"]
 draft = false
 image = "/images/ecdsa-thumb.png"
@@ -186,6 +186,23 @@ is called point doubling and it is illustrated in Figure
 > and `Q` and asked you, "how many times did I multiplied `P` to get `Q`", you cannot simply
 > divide one by another to get the result. This kind of property of "going one way" is what we
 > call a "trapdoor function" in cryptography.
+>
+> > [!NOTE]- Trapdoor Function
+> >
+> > Okay, I should make a little note here about trapdoor functions on ECC.
+> >
+> > When we talk about trapdoor functions in cryptography, we are dealing with computationally hard
+> > problems to solve. That's the reason why a lot of cryptographic algorithms deals with prime numbers,
+> > as prime numbers have a lot of nice properties that are hard to solve.
+> >
+> > For the case of elliptic curves, the "going one way" I told you is actually simple to solve
+> > when we are dealing with curves over the real domain. The problem only becomes hard when we use
+> > curves over **finite fields** (I'll be touching on what's that later on). This hard problem on elliptic curves
+> > is what is called the **Elliptic Curve Discrete Logarithm Problem (ECDLP)**, and you should focus on
+> > the word *Discrete* here.
+> >
+> > So while I'll be approaching the curves on the real domain in this post to bring a better *intuition*, the
+> > actual security of the scheme only happens when we deal with finite fields curves.
 
 
 #### Neutral Element {#neutral-element}
