@@ -3,7 +3,7 @@ title = "ECDSA: Visually Explained"
 author = ["Suzumi Nagata"]
 date = 2026-04-23T00:00:00-03:00
 publishDate = 2026-04-23T00:00:00-03:00
-lastmod = 2026-05-12T13:14:02-03:00
+lastmod = 2026-10-17T23:42:44-03:00
 tags = ["DigitalSignatures", "ECC", "Cryptography", "Visualization"]
 draft = false
 image = "/images/ecdsa-thumb.png"
@@ -1245,9 +1245,6 @@ some ideas 👀).
 
 ## References
 
-<style>.csl-left-margin{float: left; padding-right: 0em;}
- .csl-right-inline{margin: 0 0 0 2em;}</style><div class="csl-bib-body">
-  <div class="csl-entry"><a id="citeproc_bib_item_1"></a>
-    <div class="csl-left-margin">[1] </div><div class="csl-right-inline">NIST. Digital Signature Standard (DSS). Washington, D.C.: National Institute of Standards and Technology (U.S.); 2023. <a href="https://doi.org/10.6028/NIST.FIPS.186-5">https://doi.org/10.6028/NIST.FIPS.186-5</a>.</div>
-  </div>
+<div class="csl-bib-body">
+  <div class="csl-entry"><a id="citeproc_bib_item_1"></a>[1] NIST. Digital Signature Standard (DSS). Washington, D.C.: National Institute of Standards and Technology (U.S.); 2023. <a href="https://doi.org/10.6028/NIST.FIPS.186-5">https://doi.org/10.6028/NIST.FIPS.186-5</a>.</div>
 </div>
