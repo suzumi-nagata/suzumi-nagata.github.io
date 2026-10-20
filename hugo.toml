@@ -1,6 +1,6 @@
 theme = "mana"
 baseURL = 'https://suzumi-nagata.github.io/'
-languageCode = 'en-us'
+locale = 'en-US'
 languageName = "English"
 title = "Suzumi's little web corner"
 [caches]
