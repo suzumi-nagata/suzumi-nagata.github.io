@@ -17,11 +17,11 @@ heroTitleLine2 = "Web Corner"
 math = true
 
 [params.avatar]
-assetPath = "images/chibi-miso-transparent.png"
+assetPath = "images/chibi-miso-transparent.webp"
 [params.avatar.home]
-assetPath = "images/chibi-miso-transparent.png"
+assetPath = "images/chibi-miso-transparent.webp"
 [params.avatar.about]
-assetPath = "images/chibi-breeze-feather.png"
+assetPath = "images/chibi-breeze-feather.webp"
 
 [params.social]
 github = "https://github.com/suzumi-nagata"

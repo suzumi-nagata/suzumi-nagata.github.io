@@ -1,0 +1,70 @@
+{{- /*
+  Optimized figure shortcode.
+
+  Overrides Hugo's built-in figure shortcode so images that live in static/
+  (for example the PNGs exported by ox-hugo) are also run through Hugo's image
+  pipeline: PNG diagrams become lossless WebP, photos become quality-85 WebP,
+  large images are capped at 1200px wide, and every image gets intrinsic
+  width/height plus lazy loading.
+*/ -}}
+
+{{- $src := .Get "src" -}}
+{{- $caption := .Get "caption" -}}
+{{- $alt := .Get "alt" -}}
+{{- $class := .Get "class" -}}
+{{- $title := .Get "title" -}}
+{{- $link := .Get "link" -}}
+{{- $target := .Get "target" -}}
+{{- $rel := .Get "rel" -}}
+{{- $loading := .Get "loading" | default "lazy" -}}
+{{- $widthAttr := .Get "width" -}}
+{{- $heightAttr := .Get "height" -}}
+{{- $altText := $alt | default $caption | default "" -}}
+
+{{- $u := urls.Parse $src -}}
+{{- $path := strings.TrimPrefix "./" $u.Path -}}
+{{- $path = strings.TrimPrefix "/" $path -}}
+{{- $res := false -}}
+
+{{- /* Resolve the image: page bundle, then assets/, then static/. */ -}}
+{{- if not $u.IsAbs -}}
+  {{- with .Page.Resources.Get $path -}}
+    {{- $res = . -}}
+  {{- else -}}
+    {{- with resources.Get $path -}}
+      {{- $res = . -}}
+    {{- else -}}
+      {{- $staticPath := printf "static/%s" $path -}}
+      {{- if fileExists $staticPath -}}
+        {{- $res = resources.FromString $path (os.ReadFile $staticPath) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $sub := "" -}}
+{{- with $res -}}{{- $sub = lower .MediaType.SubType -}}{{- end -}}
+{{- $processable := and $res (in (slice "png" "jpeg" "webp") $sub) -}}
+{{- $img := $res -}}
+{{- if $processable -}}
+  {{- $width := cond (gt $res.Width 1200) 1200 $res.Width -}}
+  {{- $quality := cond (eq $sub "png") "lossless" "q85" -}}
+  {{- $img = $res.Resize (printf "%dx webp %s" $width $quality) -}}
+{{- end -}}
+
+{{- $imgSrc := $src -}}
+{{- if $processable -}}{{- $imgSrc = $img.RelPermalink -}}{{- else if $res -}}{{- $imgSrc = $res.RelPermalink -}}{{- end -}}
+
+<figure{{ with $class }} class="{{ . }}"{{ end }}>
+  {{- with $link }}<a href="{{ . }}"{{ with $target }} target="{{ . }}"{{ end }}{{ with $rel }} rel="{{ . }}"{{ end }}>{{ end -}}
+  <img src="{{ $imgSrc }}"
+    alt="{{ $altText | plainify }}"
+    {{- with $title }} title="{{ . }}"{{ end }}
+    {{- if $widthAttr }} width="{{ $widthAttr }}"{{ else }}{{ if $processable }} width="{{ $img.Width }}"{{ end }}{{ end }}
+    {{- if $heightAttr }} height="{{ $heightAttr }}"{{ else }}{{ if $processable }} height="{{ $img.Height }}"{{ end }}{{ end }}
+    loading="{{ $loading }}" decoding="async">
+  {{- with $link }}</a>{{ end }}
+  {{- with $caption }}
+  <figcaption><p>{{ . | markdownify }}</p></figcaption>
+  {{- end }}
+</figure>

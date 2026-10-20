@@ -1,41 +1,62 @@
 {{- $image := .Page.Resources.GetMatch .Destination -}}
-
-{{- /* The following is is used as a fallback if the image is not found or if it's a GIF. */ -}}
-{{- $default := printf "<img src=\"%s\"alt=\"%s\" title=\"%s\" />" (.Destination | safeURL) $.PlainText $.Title -}}
-
-{{- if $image -}}
-    {{- if (strings.HasSuffix $image.Name ".gif") -}}
-        {{- $default | safeHTML -}}
-    {{- else -}}
-        {{- $imageOriginalWidth := $image.Width -}}
-        {{- $sizes := slice 458 768 1200 -}}
-        {{- $srcset := slice -}}
-        {{- $sizestag := slice -}}
-        {{- range $sizes -}}
-            {{- if lt (mul . 1.2) $imageOriginalWidth -}}
-                {{- $thumb := $image.Resize (printf "%dx webp q100" .) -}}
-                {{- $srcset = $srcset | append (printf ("%s %dw") $thumb.RelPermalink . ) -}}
-                {{- $sizestag = $sizestag | append (printf ("(max-width: %dpx) 100vw") . ) -}}
+{{- /* Also look in assets/ and static/, so plain Markdown images can be
+       optimized the same way as figure shortcodes. */ -}}
+{{- if not $image -}}
+    {{- $u := urls.Parse .Destination -}}
+    {{- $path := strings.TrimPrefix "./" $u.Path -}}
+    {{- $path = strings.TrimPrefix "/" $path -}}
+    {{- if not $u.IsAbs -}}
+        {{- with resources.Get $path -}}
+            {{- $image = . -}}
+        {{- else -}}
+            {{- $staticPath := printf "static/%s" $path -}}
+            {{- if fileExists $staticPath -}}
+                {{- $image = resources.FromString $path (os.ReadFile $staticPath) -}}
             {{- end -}}
         {{- end -}}
+    {{- end -}}
+{{- end -}}
 
-        {{- if ne (len $srcset) 3 -}}
-            {{- $thumb := $image.Resize (printf "%dx webp q100" $imageOriginalWidth) -}}
-            {{- $srcset = $srcset | append (printf ("%s %dw") $thumb.RelPermalink $imageOriginalWidth ) -}}
-            {{- $sizestag = $sizestag | append (printf ("%dpx") $imageOriginalWidth ) -}}
+{{- /* Fallback when the image is not a page bundle resource or is a GIF/SVG. */ -}}
+{{- $default := printf "<img src=\"%s\" alt=\"%s\" title=\"%s\" loading=\"lazy\" decoding=\"async\" />" (.Destination | safeURL) $.PlainText $.Title -}}
+
+{{- if $image -}}
+    {{- $sub := lower $image.MediaType.SubType -}}
+    {{- if in (slice "png" "jpeg" "webp") $sub -}}
+        {{- $originalWidth := $image.Width -}}
+        {{- /* Never upscale, and cap very large images at 1200px. */ -}}
+        {{- $maxWidth := cond (gt $originalWidth 1200) 1200 $originalWidth -}}
+        {{- $widths := slice -}}
+        {{- range (slice 458 768 1200) -}}
+            {{- if lt . $maxWidth -}}
+                {{- $widths = $widths | append . -}}
+            {{- end -}}
+        {{- end -}}
+        {{- $widths = $widths | append $maxWidth -}}
+
+        {{- $srcset := slice -}}
+        {{- $largest := false -}}
+        {{- range $widths -}}
+            {{- $thumb := $image.Resize (printf "%dx webp q88" .) -}}
+            {{- $srcset = $srcset | append (printf "%s %dw" $thumb.RelPermalink .) -}}
+            {{- $largest = $thumb -}}
         {{- end -}}
         <figure class="image-caption">
             <img
-                src="{{ $image.RelPermalink }}"
+                src="{{ $largest.RelPermalink }}"
                 alt="{{ $.PlainText }}"
                 title="{{ $.Title }}"
-                {{- if gt (len $srcset) 0 -}}
-                    {{- (printf " srcset=\"%s\"" (delimit $srcset ", ")) | safeHTMLAttr -}}
-                    {{- (printf " sizes=\"%s\"" (delimit $sizestag ", ")) | safeHTMLAttr -}}
-                {{- end -}}
+                srcset="{{ delimit $srcset ", " }}"
+                sizes="(max-width: 750px) 100vw, 750px"
+                width="{{ $largest.Width }}"
+                height="{{ $largest.Height }}"
+                loading="lazy"
+                decoding="async"
             />
             <figcaption>{{ with $.Title | safeHTML }}{{ . }}{{ end }}</figcaption>
         </figure>
+    {{- else -}}
+        {{- $default | safeHTML -}}
     {{- end -}}
 {{- else -}}
     {{- warnf "Unable to find '%s' -- ensure image exists alongside document in page bundle" .Destination -}}
